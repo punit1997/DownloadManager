@@ -4,7 +4,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"sync"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,22 +12,18 @@ type Concurrent struct {
 	Urls []string
 }
 
-const limitThreads = 1
+const limitThreads = 5
 
 func (files *Concurrent) Download(r *gin.Context) {
 
 	var ch = make(chan string)
-
-	var wg sync.WaitGroup
-	wg.Add(limitThreads)
 
 	for i := 0; i < limitThreads; i++ {
 		go func() {
 			for {
 				url, ok := <-ch
 				if !ok {
-					wg.Done()
-					return
+					return //close go routine when channel is closed
 				}
 				resp, _ := http.Get(url)
 				nameId := uuid()
@@ -39,10 +34,16 @@ func (files *Concurrent) Download(r *gin.Context) {
 		}()
 	}
 
-	for _, url := range files.Urls {
-		ch <- url
-	}
+	go func() {
+		for _, url := range files.Urls {
+			ch <- url
+		}
+		close(ch)
+		return
+	}()
 
-	close(ch)
-	wg.Wait()
+	ResponseId := uuid()
+	r.JSON(200, gin.H{
+		"Id": ResponseId,
+	})
 }
