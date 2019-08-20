@@ -23,12 +23,25 @@ func Start(r *gin.Context) {
 		file = &models.Serial{Urls: request.Urls}
 	} else if request.Type == "concurrent" {
 		file = &models.Concurrent{Urls: request.Urls}
+	} else {
+		r.JSON(400, gin.H{
+			"internal_code": 4001,
+			"message":       "unknown type of download",
+		})
+		return
 	}
 
 	file.Download(r)
 }
 
 func Show(r *gin.Context) {
-	response := models.GetStatus[r.Param("id")]
+	response, ok := models.GetStatus[r.Param("id")]
+	if !ok {
+		r.JSON(400, gin.H{
+			"internal_code": 4002,
+			"message":       "unknown download ID",
+		})
+		return
+	}
 	r.JSON(200, response)
 }
