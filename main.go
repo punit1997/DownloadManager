@@ -5,8 +5,6 @@ import (
 )
 
 func main() {
-
 	r := routes.InitRoute()
-
 	r.Run(":8081")
 }

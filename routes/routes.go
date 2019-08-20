@@ -13,9 +13,7 @@ func InitRoute() *gin.Engine {
 			"message": "OK",
 		})
 	})
-
 	route.POST("/downloads", controller.Start)
-
 	route.GET("/downloads/:id", controller.Show)
 
 	return route

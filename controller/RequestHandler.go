@@ -17,7 +17,6 @@ func Start(r *gin.Context) {
 	bodyByte, _ := ioutil.ReadAll(body)
 	var request models.Request
 	json.Unmarshal(bodyByte, &request)
-
 	var file TypeDownload
 
 	if request.Type == "serial" {
@@ -30,15 +29,6 @@ func Start(r *gin.Context) {
 }
 
 func Show(r *gin.Context) {
-
 	response := models.GetStatus[r.Param("id")]
-
-	r.JSON(200, gin.H{
-		"id":            response.Id,
-		"start_time":    response.StartTime,
-		"end_time":      response.EndTime,
-		"status":        response.Status,
-		"download_type": response.DownloadType,
-		"files":         response.Files,
-	})
+	r.JSON(200, response)
 }

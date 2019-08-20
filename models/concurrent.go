@@ -18,7 +18,6 @@ const limitThreads = 5
 func (files *Concurrent) Download(r *gin.Context) {
 
 	ResponseId := uuid()
-
 	GetStatus[ResponseId] = &Status{
 		Id:           ResponseId,
 		StartTime:    time.Now(),
@@ -51,7 +50,6 @@ func (files *Concurrent) Download(r *gin.Context) {
 			ch <- url
 		}
 		close(ch)
-
 		GetStatus[ResponseId].EndTime = time.Now()
 		GetStatus[ResponseId].Files = UrlLocation
 		GetStatus[ResponseId].Status = "SUCCESSFULL"
