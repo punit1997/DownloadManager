@@ -22,7 +22,8 @@ func Start(r *gin.Context) {
 
 	if request.Type == "serial" {
 		file = &models.Serial{Urls: request.Urls}
-
+	} else if request.Type == "concurrent" {
+		file = &models.Concurrent{Urls: request.Urls}
 	}
 
 	file.Download(r)
