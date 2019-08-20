@@ -16,5 +16,7 @@ func InitRoute() *gin.Engine {
 
 	route.POST("/downloads", controller.Start)
 
+	route.GET("/downloads/:id", controller.Show)
+
 	return route
 }
